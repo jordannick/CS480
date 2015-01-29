@@ -1,0 +1,52 @@
+." 1) " ." Hello World" CR
+
+10 7 + 3 5 * 12 / -
+." 2) " . CR
+
+10 s>f 7 s>f f+ 3 s>f 5 s>f f* 12 s>f f/ f-
+." 3) " f. CR
+
+10.0e0 7.0e0 f+ 3.0e0 5.0e0 f* 12.0e0 f/ f-
+." 4) " f. CR
+
+10 s>f 7.0e0 f+ 3.0e0 5 s>f f* 12 s>f f/ f-
+." 5) " f. CR
+
+: y 10 ;
+: x 7.0e0 ;
+y s>f x f+ 3.0e0 5 s>f f* 12 s>f f/ f-
+." 6) " f. CR
+
+: isless 5 3 < IF 7 ELSE 2 THEN ;
+." 7) " isless . CR
+
+: isgreater 5 3 > IF 7 ELSE 2 THEN ;
+." 8) " isgreater . CR
+
+: iter 6 0 DO I . LOOP ;
+." 9) " iter CR
+
+: convertint s>f ;
+." 10) convertint(10) = " 10 convertint f. CR
+
+: fact recursive 
+	dup 0 > IF 
+		dup 1 - fact * 
+	ELSE 
+		drop 1 
+	THEN ;  
+." 11) fact(5) = " 5 fact . CR
+
+: fib recursive 
+	dup 0 = IF 
+		drop 0 
+	ELSE 
+		dup 1 = IF 
+			drop 1 
+		ELSE 
+			dup 1 - fib swap 2 - fib + 
+		THEN 
+	THEN ;
+." 12) fib(5) = " 5 fib . CR
+
+BYE
