@@ -3,6 +3,7 @@
 
 from token import *
 import symbol_table
+import sys
 
 class Tokenize:
 
@@ -53,23 +54,23 @@ class Tokenize:
     def getSymbol(self):
         if self.inFirst:
             symbol = self.buffer0[self.current_pos]
-        else : 
+        else: 
             symbol = self.buffer1[self.current_pos]
 
-        if symbol == 'eof' :
+        if symbol == 'eof':
             self.endFile = True     
 
-        # Have we extended past buffer size?
+        # Will it extend past buffer size?
         if ((self.current_pos + 1) < 10):
             self.current_pos += 1
-        else : 
+        else: 
             self.reloadBuffer()
             
         return symbol
 
 
     # Fills up a buffer in the pair with the next 10 symbols from file
-    # If no more symbols in file, place end of file marker in buffer
+    # If no more symbols in file, place end of file marker in buffer & halt
     def reloadBuffer(self):
 		i = 0
 		if self.inFirst:
@@ -95,8 +96,6 @@ class Tokenize:
 			self.inFirst = True
 
 		# Reset since we just switched to alternate buffer
-		print self.buffer0
-		print self.buffer1
 		self.current_pos = 0
 
 
@@ -188,29 +187,38 @@ class Tokenize:
 
 		# Try a double character, e.g. <= , !=
 		next_symbol = self.getSymbol()
-		token_value = token_value + next_symbol
-		foundSymbol = self.symbolTable.inTable(token_value)
+		token_value_double = token_value + next_symbol
+		foundSymbol = self.symbolTable.inTable(token_value_double)
 		self.holdAdvance = True
 
 		if foundSymbol != '':
-			self.tokens.append(Token(foundSymbol, token_value))
+			self.tokens.append(Token(foundSymbol, token_value_double))
 			self.holdAdvance = False
+		# Throw unknown symbols in token list for debugging
+		else:
+			self.tokens.append(Token("UNKNOWN", token_value))
 		
 		# Continue file iteration
 		self.symbolCompare(next_symbol)
 
 
     def __init__(self, parsed_file):
+		
+		# Default 1000 was too low for reasonably sized files...
+		# Some symbol handler functions rely on recursion - whoops?
+		sys.setrecursionlimit(10000)
+
 		self.file = parsed_file
 		self.endFile = False
 		self.buffer0 = ['']*10
 		self.buffer1 = ['']*10
 		self.current_pos = 0 # Current position within the current buffer
 		self.inFirst = True # Current buffer being observed
-		self.file_pos = 0 # Current character position in the file
+		self.file_pos = 0 # Current character position in the overall file
 		self.holdAdvance = False # Flag used to put a hold on iteration
 		self.symbolTable = symbol_table.Symbols()
 		self.tokens = []
+		
 
         # Do initial load
 		self.reloadBuffer()
