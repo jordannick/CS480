@@ -1,0 +1,32 @@
+float_here 64646.2124
+123 456.789
+more 123abcdef
+even more abc123.54670
+4533/*comment*/76
+
+stdout // Comment here!
+indentifierHere!
+
+"string"random53"new string" "new string2"_underscorethere
+
+printf("Hello World!");
+
+/* Multi
+	line
+comment*/
+
+while(i < 5){
+	if (true) printf("test");
+}
+
+<=
+>==
+*/=+"operators"--+!=
+&&||-<=-
+<6=>!/*invisible*/=
+
+eof //fake end of file
+
+if (64.549.54531 = 3 and true = false)
+put := 3
+>"stringtest"<="str"

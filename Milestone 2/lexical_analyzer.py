@@ -174,32 +174,25 @@ class Tokenize:
 	# Anything not handled as of yet, mainly going to be separators and operators
     def otherSymbolHandler(self, symbol):
 		current_symbol = symbol
-		
+		next_symbol = self.getSymbol()
 		token_value = current_symbol
 		foundSymbol = self.symbolTable.inTable(token_value)
-
-		# Try a single character operator or separator, e.g. ( , < , +
-		if foundSymbol != '':
-			self.tokens.append(Token(foundSymbol, token_value))
-			# Continue file iteration
-			self.symbolCompare('')
-			return
-
-		# Try a double character, e.g. <= , !=
-		next_symbol = self.getSymbol()
 		token_value_double = token_value + next_symbol
-		foundSymbol = self.symbolTable.inTable(token_value_double)
-		self.holdAdvance = True
+		foundSymbolDouble = self.symbolTable.inTable(token_value_double)
 
-		if foundSymbol != '':
-			self.tokens.append(Token(foundSymbol, token_value_double))
+
+		if foundSymbolDouble != '':
+			self.tokens.append(Token(foundSymbolDouble, token_value_double))
 			self.holdAdvance = False
-		# Throw unknown symbols in token list for debugging
+			self.symbolCompare('')
+		elif foundSymbol != '':
+			self.tokens.append(Token(foundSymbol, token_value))
+			self.holdAdvance = True
+			self.symbolCompare(next_symbol)
 		else:
 			self.tokens.append(Token("UNKNOWN", token_value))
-		
-		# Continue file iteration
-		self.symbolCompare(next_symbol)
+			self.holdAdvance = True
+			self.symbolCompare(next_symbol)
 
 
     def __init__(self, parsed_file):
